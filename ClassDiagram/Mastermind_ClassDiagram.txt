@@ -1,0 +1,88 @@
+@startuml
+
+title Mastermind - Class Diagram
+
+class Mastermind
+{
+	+ board : Board
+	+ play()
+	+ {static} main()
+}
+
+Class Board
+{
+    + currentAttemp : int
+    + attempts[10] : Attempts
+    + combinationSecret : CombinationSecret
+    + showResult()
+    + isWinner()
+    + isLooser()
+}
+
+Class Attempts
+{
+    + numberAttempt : int
+    + combinationSecret : CombinationSecret
+    + combinationProposed : CombinationProposed
+    + result[2]: AttemptResultColor
+    + show()
+}
+
+enum AttemptResultColor
+{
+    BLACK
+    WHITE
+}
+
+abstract Class Combinations
+{
+    + combinationColor[4] : CombinationColor
+    + {abstract} set();
+    + {abstract} show();
+}
+
+Class CombinationsSecret
+{
+    + set();
+    + show();
+    + compare(CombinationsProposed combinationsProposed)
+}
+
+Class CombinationsProposed
+{
+    + set();
+    + show();
+}
+
+
+Class Console
+{
+}
+
+enum CombinationColor
+{
+    RED
+    BLUE
+    GREEN
+    YELLOW
+    PINK
+    WHITE
+    BLACK
+    BROWN
+}
+
+
+Mastermind *-- Board
+Mastermind ..> Console
+Board "1" --* "10" Attempts
+Board ..> CombinationsSecret
+Board ..> Console
+Attempts --> AttemptResultColor
+Attempts ..> CombinationsSecret
+Attempts ..> Console
+Attempts --> CombinationsProposed
+Combinations <|-- CombinationsSecret
+Combinations <|-- CombinationsProposed
+Combinations "1" --> "4" CombinationColor
+
+@enduml
