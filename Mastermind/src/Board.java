@@ -36,6 +36,8 @@ class Board {
 			console.out("You've won!!! :-)\n");
 		} else {
 			console.out("you've lost!!! :-(\n");
+			console.out("Combination secret = ");
+			combinationSecret.showSecret();
 		}				
 	}
 }

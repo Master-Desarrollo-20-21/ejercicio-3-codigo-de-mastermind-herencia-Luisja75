@@ -1,45 +1,55 @@
 import java.util.Random;
 
 class CombinationSecret extends Combination {
+	
 	private int numberWhites;
 	private int numberBlacks;
 
 	public CombinationSecret() {
 		numberWhites = 0;
 		numberBlacks = 0;
-		for (int i=0; i<this.combinationsColor.length; i++) {
+		do {
+			this.set();
+		} while (this.hasColorDuplicate());			
+	}
+
+	public void set() {
+		for (int i=0; i<this.combinationColors.length; i++) {
 			int position = new Random().nextInt(Combination.LIST_CHARACTERS_ALLOWS.length);			
-			this.combinationsColor[i] = Combination.LIST_CHARACTERS_ALLOWS[position];
+			this.combinationColors[i] = Combination.LIST_CHARACTERS_ALLOWS[position];
 		}
 	}
-
+		
 	public void show() {
-		this.console.out("XXXX");
-		//this.console.out(String.valueOf(this.combinationColor) + "\n");
+		this.console.out("XXXX\n");
 	}
 
-	public int getNumberBlacks(CombinationProposed combinationProposed) {
-		checkHits(combinationProposed);
+	public void showSecret() {
+		this.console.out(String.valueOf(this.combinationColors) + "\n");
+	}
+	
+	public int getNumberBlacks(Combination combination) {
+		this.checkHits(combination);
 		return numberBlacks;
 	}
 
-	public int getNumberWhites(CombinationProposed combinationProposed) {
-		checkHits(combinationProposed);
+	public int getNumberWhites(Combination combination) {
+		this.checkHits(combination);
 		return numberWhites;
 	}
 	
-	private void checkHits(CombinationProposed combinationProposed) {
+	private void checkHits(Combination combination) {
 		numberWhites = 0;
 		numberBlacks = 0;
-		for (int i=0; i<combinationProposed.combinationsColor.length; i++) {
-			char color = combinationProposed.combinationsColor[i];
+		for (int i=0; i<combination.combinationColors.length; i++) {
+			char color = combination.combinationColors[i];
 			this.checkColor(color,i);
 		}
 	}	
 	
 	private void checkColor(char color, int position) {
-		for (int i=0; i<this.combinationsColor.length; i++) {
-			if (color == this.combinationsColor[i]) {
+		for (int i=0; i<this.combinationColors.length; i++) {
+			if (color == this.combinationColors[i]) {
 				if (position==i) {
 					numberBlacks++;
 				}

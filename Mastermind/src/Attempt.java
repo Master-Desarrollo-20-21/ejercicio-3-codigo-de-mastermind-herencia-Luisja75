@@ -2,10 +2,10 @@
 public class Attempt {
 	
 	private final int POSITION_BLACKS = 0;
-	private final int POSITION_WHITES = 0;
+	private final int POSITION_WHITES = 1;
 	
 	CombinationSecret combinationSecret;
-	CombinationProposed combinationProposed;
+	Combination combinationProposed;
 	private int[] result;
 	private Console console;
 

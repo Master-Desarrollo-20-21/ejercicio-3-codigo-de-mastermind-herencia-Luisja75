@@ -14,10 +14,10 @@ class Mastermind {
 		String answer;
 		Console console = new Console(); 
 		do { 
-			console.out("¿Quieres continuar? (s/n): ");
+			console.out("RESUME? (y/n): ");
 			answer = console.inString(); 
-		} while (!answer.equals("s") && !answer.equals("n")); 
-		return answer.equals("s");
+		} while (!answer.equals("y") && !answer.equals("n")); 
+		return answer.equals("y");
 	} 
 
 	public static void main(String[] args) {
