@@ -1,6 +1,9 @@
 
 public class Attempt {
 	
+	private final int POSITION_BLACKS = 0;
+	private final int POSITION_WHITES = 0;
+	
 	CombinationSecret combinationSecret;
 	CombinationProposed combinationProposed;
 	private int[] result;
@@ -13,19 +16,19 @@ public class Attempt {
 		console = new Console();
 	}
 		
-	public void set() {
+	public void setCombinationProposed() {
 		combinationProposed.set();
-		result[0] = CombinationSecret.getBlacks(combinationProposed);
-		result[1] = CombinationSecret.getWhites(combinationProposed);	
+		result[POSITION_BLACKS] = combinationSecret.getNumberBlacks(combinationProposed);
+		result[POSITION_WHITES] = combinationSecret.getNumberWhites(combinationProposed);	
 	}
 
 	public void show() {
 		combinationProposed.show();
-		String salida = " --> " + result[0] + " blacks " +  result[1] + " whites\n"; 
+		String salida = " --> " + result[POSITION_BLACKS] + " blacks " +  result[POSITION_WHITES] + " whites\n"; 
 		console.out(salida);
 	}
 
 	public boolean isSecret() {
-		return result[0] == 4;
+		return result[POSITION_BLACKS] == 4;
 	}
 }

@@ -12,40 +12,39 @@ class Mastermind
 Class Board
 {
     + currentAttemp : int
-    + attempts[10] : Attempts
+    + attempts[10] : Attempt
     + combinationSecret : CombinationSecret
+	+ win: boolean
+    + play()
     + showResult()
-    + isWinner()
-    + isLooser()
 }
 
 Class Attempts
 {
-    + numberAttempt : int
     + combinationSecret : CombinationSecret
     + combinationProposed : CombinationProposed
-    + result[2]: AttemptResultColor
+    + result[2]: int
+    + setCombinationProposed()
     + show()
+	+ isSecret()
 }
 
 enum AttemptResultColor
 {
-    BLACK
-    WHITE
+    0-BLACK
+    1-WHITE
 }
 
-abstract Class Combinations
+Class Combinations
 {
-    + combinationColor[4] : CombinationColor
-    + {abstract} set();
-    + {abstract} show();
+    + combinationColors[4] : CombinationColor
 }
 
 Class CombinationsSecret
 {
-    + set();
     + show();
-    + compare(CombinationsProposed combinationsProposed)
+    + getNumberBlacks(CombinationsProposed combinationsProposed)
+    + getNumberWhites(CombinationsProposed combinationsProposed)
 }
 
 Class CombinationsProposed
@@ -61,28 +60,29 @@ Class Console
 
 enum CombinationColor
 {
-    RED
-    BLUE
-    GREEN
-    YELLOW
-    PINK
-    WHITE
-    BLACK
-    BROWN
+    r - RED
+    b - BLUE
+    g - GREEN
+    y - YELLOW
+    p - PINK
+    w - WHITE
+    b - BLACK
+    o - BROWN
 }
 
-
 Mastermind *-- Board
-Mastermind ..> Console
 Board "1" --* "10" Attempts
 Board ..> CombinationsSecret
-Board ..> Console
 Attempts --> AttemptResultColor
 Attempts ..> CombinationsSecret
-Attempts ..> Console
 Attempts --> CombinationsProposed
 Combinations <|-- CombinationsSecret
 Combinations <|-- CombinationsProposed
 Combinations "1" --> "4" CombinationColor
+Board ..> Console
+Attempts ..> Console
+Mastermind ..> Console
+CombinationsSecret ..> Console
+CombinationsProposed ..> Console
 
 @enduml
