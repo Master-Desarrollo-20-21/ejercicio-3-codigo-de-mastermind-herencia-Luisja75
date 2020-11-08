@@ -1,0 +1,181 @@
+public class Movement {
+	
+	private Console console;
+	private Board board;
+	private Player player;
+	private Coordenada origin;
+	private Coordenada destination;
+	private TypeMovement type;
+	private TypeDirection direction;
+	private int distance;
+	
+	public Movement(Board board, Player player) {
+		this.console = new Console();
+		this.board = board;
+		this.player = player;
+	}
+
+	public void requestCoordenates() {
+		do {
+			requestOrigen();
+			requestDestination();	
+		} while (!this.isCorrect());   	
+	
+	}
+
+	public Coordenada getOrigin() {
+		 return origin;
+	}
+	
+	public Coordenada getDestination() {
+		 return destination;
+	}	
+
+    private void requestOrigen(){
+		boolean coordenadaOrigenValida = false;
+		do {
+			console.out("Introduce coordenada ficha ORIGEN\n");
+			origin = new Coordenada();
+			origin.recoger(1,8);
+			coordenadaOrigenValida = coordenadaOrigenValida();
+		} while (!coordenadaOrigenValida);   	
+    }
+	
+	private boolean coordenadaOrigenValida() {
+		Box box = board.getBox(origin);
+		if(!box.hasToken()) {
+			console.out("La coordenada origen no tiene ficha\n");
+			return false;
+		}
+		if (box.IsPlayer(this.player)) {
+			console.out("La coordenada origen tiene una ficha que no es de tu jugador\n");
+			return false;
+		}
+		return true;
+	}
+	
+    private void requestDestination() {
+		boolean coordenadaOrigenDestino = false;
+		do {
+			console.out("Introduce coordenada ficha DESTINO\n");
+			destination = new Coordenada();
+			destination.recoger(1,8);
+			coordenadaOrigenDestino = coordenadaDestinoValida();
+		} while (!coordenadaOrigenDestino);		
+    	
+    }
+
+	private boolean coordenadaDestinoValida() {
+		Box box = board.getBox(destination);
+		if(box.IsPlayer(player)) {
+			console.out("La coordenada destino tiene una ficha de tu jugador\n");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean isCorrect() {
+		calculateType();
+		calculateDirection();
+		calculateDistance();
+		
+		if (type == TypeMovement.UNKNOWN){
+			console.out("El movimiento introducido es desconocido\n");
+			return false;
+		}
+
+		Box box = board.getBox(this.origin);
+		Token tokenOrigin = box.getToken();
+		if (!tokenOrigin.isMovementAllow(type) && !tokenOrigin.isDirectionAllow(direction) && !tokenOrigin.isDistanceAllow(distance)) {
+			console.out("El movimiento introducido no está permitido para la pieza que se quiere mover.");
+			return false;	
+		}
+
+		if (!this.freeWay()) {
+			console.out("El movimiento introducido no está permitido porque hay piezas en el camnino\n");
+			return false;
+		}
+	
+		return true;
+	}
+	
+	private boolean freeWay() {
+		if (this.type == TypeMovement.L) {
+			return true;
+		}
+
+		int incrementToNextFila = 0; 
+		int incrementToNextColum = 0; 
+		if (this.type == TypeMovement.HORIZONTAL || this.type == TypeMovement.DIAGONAL) {
+			if (this.direction == TypeDirection.BACK) {
+				incrementToNextColum = -1;
+			} else {
+				incrementToNextColum = 1;
+			}			
+		}
+		if (this.type == TypeMovement.VERTICAL || this.type == TypeMovement.DIAGONAL) {
+			if (this.direction == TypeDirection.BACK) {
+				incrementToNextFila = -1;
+			} else {
+				incrementToNextFila = 1;
+			}			
+		}
+
+		int nextFila = origin.fila + incrementToNextFila;
+		int nextColum = origin.columna + incrementToNextColum;
+		for (int i=1; i<=this.distance; i++) {
+			Coordenada nextCoordenate = new Coordenada(nextFila, nextColum);
+			Box box = board.getBox(nextCoordenate);
+			if (box.hasToken()) {				
+				return false;
+			}
+			nextFila += incrementToNextFila;
+			nextColum += incrementToNextColum;
+		}
+		
+		return true;
+	}
+	
+	
+	private void calculateType()
+	{
+		if (origin.fila == destination.fila) {
+			this.type = TypeMovement.HORIZONTAL;
+		} else if (origin.columna == destination.columna) {
+			this.type = TypeMovement.VERTICAL;
+		} else if (Math.abs(origin.fila - destination.fila) == Math.abs(origin.columna - destination.columna)) {
+			this.type = TypeMovement.DIAGONAL;
+			Box box = board.getBox(destination);
+			if(box.IsPlayer(player)) {
+				this.type = TypeMovement.DIAGONAL_BY_EAT;
+			}
+		} else if ((Math.abs(origin.fila - destination.fila) == 2 && Math.abs(origin.columna - destination.columna) == 1) ||
+			       (Math.abs(origin.fila - destination.fila) == 1 && Math.abs(origin.columna - destination.columna) == 2)){
+			this.type =  TypeMovement.L;
+		} else {
+			this.type = TypeMovement.UNKNOWN;
+		}
+	}
+	
+	private void calculateDistance()
+	{
+		this.distance = 0;
+		if (this.type == TypeMovement.HORIZONTAL || this.type == TypeMovement.DIAGONAL) {
+			distance = Math.abs(origin.columna - destination.columna);
+		}
+		if (this.type == TypeMovement.VERTICAL) {
+			this.distance = Math.abs(origin.fila - destination.fila);
+		}		
+	}
+	
+	private void calculateDirection()
+	{
+		this.direction = TypeDirection.FORWARD;
+		if (origin.columna > destination.columna ||
+		    origin.fila > destination.fila){
+			this.direction = TypeDirection.BACK;
+		} 
+	}	
+}
+
